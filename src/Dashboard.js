@@ -6,12 +6,17 @@ const Dashboard = props => {
     console.log(props);
     // deconstruct props
 
+    const [userData, setUserData] = useState({
+        id: '',
+        balance: '',
+        transactions: ''
+    });
+
     const history = useHistory();
 
     useEffect(() => {
-        // check localStorage for id
-        // if no ID => login
-        // history.push('/login');
+        const id = localStorage.getItem('id')
+        setUserData({...userData, id: id});
 
         // get list of transactions on mount
         // parse data to create list of transactions for user
@@ -29,9 +34,22 @@ const Dashboard = props => {
         // we'll probably just start out with changing it in the localStorag and worrying about users when we impliment a login system...
     }
 
+    const handleLogout = () => {
+        localStorage.removeItem('id')
+        history.push('/login')
+    }
+
     return (
         <div className='Dashboard'>
             <p>Dashboard.js</p>
+            {userData.id && (
+                <>
+                    <button onClick={() => handleLogout()}>
+                        Logout
+                    </button>
+                <p>Welcome {userData.id}...</p>
+                </>
+            )}
         </div>
     );
 }
