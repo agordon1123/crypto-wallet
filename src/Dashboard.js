@@ -1,25 +1,20 @@
 import React, { useEffect, useState } from 'react';
-import { useHistory } from 'react-router-dom';
-import Moment from 'react-moment';
+import { useHistory, Link } from 'react-router-dom';
 import axios from 'axios';
 
-console.log(Moment)
-const Dashboard = props => {
-    console.log(props);
-    // deconstruct props
+const Dashboard = () => {
+    const history = useHistory();
 
     const [userData, setUserData] = useState({
         id: '',
         balance: 0,
         transactions: [],
-        lastBlock: {}
+        lastBlock: {},
+        chainLength: 0
     });
 
     const [mining, setMining] = useState(false);
-
-    console.log(userData);
-
-    const history = useHistory();
+    const [proof, setProof] = useState('');
 
     useEffect(() => {
         const id = localStorage.getItem('id')
@@ -68,6 +63,7 @@ const Dashboard = props => {
                     balance: count,
                     transactions: transactions,
                     lastBlock: lastBlock,
+                    chainLength: chain.length
                 })
             })
             .catch(err => {
@@ -75,44 +71,80 @@ const Dashboard = props => {
             })
     }, []);
 
-    const handleChange = e => {
-        // setState for changing ID
-        // have input pop in with editing state
-        // input new ID twice
-
-        // parse data to see if ID exists already ?
-        // TODO: how will we handle previous ledger changes when new ID??? It must be immutable...
-
-        // we'll probably just start out with changing it in the localStorag and worrying about users when we impliment a login system...
+    const handleProofChange = e => {
+        setProof(e.target.value);
     }
 
     const handleLogout = () => {
-        localStorage.removeItem('id')
-        history.push('/login')
+        localStorage.removeItem('id');
+        history.push('/login');
+    }
+
+    const CancelToken = axios.CancelToken;
+    let cancel;
+
+    const mine = proof => {
+        // get last block
+        // run a proof of work
+        // submit when true
+        // setting canceling up to test
+        
+        axios.post('http://localhost:5000/mine', {
+              id: userData.id, proof: proof 
+            }, { 
+              cancelToken: new CancelToken(function executor(c){
+                  cancel = c;
+              }) 
+            }
+        )
+        .then(res => {
+            alert(res.data.message)
+        })
+        .catch(err => {
+            setMining(false);
+            alert(err)
+        })
     }
 
     return (
         <div className='Dashboard'>
-            <p>Dashboard.js</p>
             {userData.id && (
-                <>
+                <div className='userData'>
                     <button onClick={() => handleLogout()}>
                         Logout
                     </button>
-                    <p>Welcome {userData.id}...</p>
-                    <p>Balance: {userData.balance}</p>
-                    <button onClick={() => setMining(true)}>Mine</button>                
-                </>
+                    <Link to='/edit'>Edit Name</Link>
+                    <p>Welcome, {userData.id}!</p>
+                    <p>The current chain has {userData.chainLength} blocks.</p>
+                    <p>Balance: ${userData.balance}</p>
+                    {!mining && (
+                        // if setting up a proof of work on client side
+                        // <button onClick={() => mine()}>Mine</button>
+                        <button onClick={() => setMining(true)}>Mine</button>                
+                    )}
+                    {mining && (
+                        <>
+                            <p>...</p>
+                            <input
+                                type='text'
+                                onChange={handleProofChange}
+                            />
+                            <button onClick={() => mine(proof)}>Submit</button>
+                            <button onClick={() => setMining(false)}>Cancel</button>
+                            {/* connected to axios request */}
+                            {/* <button onClick={() =>  cancel()}>Cancel</button> */}
+                        </>
+                    )}
+                </div>
             )}
 
             {userData.transactions && (
-                <>
+                < div className='transactions'>
                     <p>Transactions:</p>
                     {
                         userData.transactions.map((el, i) => {
-                            console.log(el)
                             let date = Date(el.timestamp);
-                            console.log(date)
+                            
                             if (el.sender === "0") {
                                 // mined => blue
                                 return (
@@ -133,7 +165,7 @@ const Dashboard = props => {
                             }
                         })
                     }
-                </>
+                </div>
             )}
         </div>
     );
