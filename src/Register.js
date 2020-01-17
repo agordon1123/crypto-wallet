@@ -21,7 +21,7 @@ const Register = props => {
     const handleSubmit = props => {
         // handle axios call
         // set id to localStorage upon success
-        if (creds.username !== '') {
+        if (creds.username) {
             localStorage.setItem('id', creds.username);
             history.push('/');
         } else {

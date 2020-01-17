@@ -21,8 +21,12 @@ const Login = props => {
     const handleSubmit = props => {
         // handle axios call
         // set id to localStorage upon success
-        localStorage.setItem('id', creds.username);
-        history.push('/')
+        if (creds.username) {
+            localStorage.setItem('id', creds.username);
+            history.push('/');
+        } else {
+            // error state
+        }
     }
 
     return (
