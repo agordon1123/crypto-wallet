@@ -19,7 +19,7 @@ const Dashboard = () => {
     useEffect(() => {
         const id = localStorage.getItem('id')
 
-        // get list of transactions on mount
+        // get blockchain on mount
         axios.get('http://localhost:5000/chain')
             .then(res => {
                 console.log(res);
