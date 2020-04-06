@@ -1,24 +1,25 @@
 import React from 'react';
-import logo from './logo.svg';
+import { Route } from 'react-router-dom';
+import Dashboard from './Dashboard';
+import Login from './Login';
+import Register from './Register';
+import EditName from './EditName';
+import PrivateRoute from './PrivateRoute';
 import './App.css';
 
-function App() {
+// TODO:
+// [ ] style app
+// [ ] create back-end applation with User class and auth
+// [ ] incorporate checks in login, register, and edit name
+// [ ] finish mining function
+
+const App = () => {
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <Route path='/login' component={Login} />
+      <Route path='/register' component={Register} />
+      <PrivateRoute exact path='/' component={Dashboard} />
+      <PrivateRoute path='/edit' component={EditName} />
     </div>
   );
 }
