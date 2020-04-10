@@ -1,3 +1,41 @@
 .App {
   text-align: center;
+  max-width: 40vw;
+  background-color: white;
+  margin: 10vh auto;
+  height: 80vh;
+}
+
+.Nav {
+  height: 10%;
+  display: flex;
+  justify-content: flex-end;
+}
+
+/* .menuButton {
+  margin: 10px;
+} */
+
+.Login {
+  height: 80%;
+}
+
+.Register {
+  height: 80%;
+}
+
+.Dashboard {
+  height: 80%;
+}
+
+.EditName {
+  height: 80%;
+}
+
+.Mine {
+  height: 80%;
+}
+
+.Transactions {
+  height: 80%;
 }

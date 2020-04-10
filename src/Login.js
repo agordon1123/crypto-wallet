@@ -38,7 +38,6 @@ const Login = props => {
                 onChange={handleChange}
                 placeholder='username'
             />
-            <p>This will be your unique ID</p>
             
             <input
                 type='text'
